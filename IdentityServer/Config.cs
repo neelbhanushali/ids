@@ -16,11 +16,31 @@ namespace IdentityServer
             };
 
         public static IEnumerable<ApiScope> ApiScopes =>
-            new ApiScope[]
-            { };
+            new List<ApiScope>
+            {
+                new ApiScope("customer-app", "Customer App"),
+                new ApiScope("partner-os", "Partner OS"),
+            };
 
         public static IEnumerable<Client> Clients =>
-            new Client[] 
-            { };
+            new List<Client>
+            {
+                new Client
+                {
+                    ClientId = "ClientCredentials",
+
+                    // no interactive user, use the clientid/secret for authentication
+                    AllowedGrantTypes = GrantTypes.ClientCredentials,
+
+                    // secret for authentication
+                    ClientSecrets =
+                    {
+                        new Secret("ClientCredentialsSecret".Sha256())
+                    },
+
+                    // scopes that client has access to
+                    AllowedScopes = { "customer-app", "partner-os" }
+                }
+            };
     }
 }
