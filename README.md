@@ -1,3 +1,7 @@
+# Completed
+- https://identityserver4.readthedocs.io/en/latest/quickstarts/1_client_credentials.html
+- https://identityserver4.readthedocs.io/en/latest/quickstarts/2_interactive_aspnetcore.html
+
 # Working
 - Added Scopes
 	- customer-app
