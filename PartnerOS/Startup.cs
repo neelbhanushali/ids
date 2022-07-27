@@ -33,6 +33,9 @@ namespace PartnerOS
                 options.ResponseType = "code";
 
                 options.SaveTokens = true;
+
+                options.Scope.Add("partner-os");
+                options.Scope.Add("offline_access");
             });
         }
 
