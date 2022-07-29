@@ -64,6 +64,24 @@ namespace IdentityServer
                         IdentityServerConstants.StandardScopes.Profile,
                         "partner-os"
                     }
+                },
+                new Client
+                {
+                    ClientId = "AuthorizationCodeCustomerApp",
+                    ClientName = "JavaScript Client",
+                    AllowedGrantTypes = GrantTypes.Code,
+                    RequireClientSecret = false,
+
+                    RedirectUris =           { "https://localhost:5015/callback.html" },
+                    PostLogoutRedirectUris = { "https://localhost:5015/index.html" },
+                    AllowedCorsOrigins =     { "https://localhost:5015" },
+
+                    AllowedScopes =
+                    {
+                        IdentityServerConstants.StandardScopes.OpenId,
+                        IdentityServerConstants.StandardScopes.Profile,
+                        "customer-app"
+                    }
                 }
             };
     }

@@ -2,6 +2,7 @@
 - https://identityserver4.readthedocs.io/en/latest/quickstarts/1_client_credentials.html
 - https://identityserver4.readthedocs.io/en/latest/quickstarts/2_interactive_aspnetcore.html
 - https://identityserver4.readthedocs.io/en/latest/quickstarts/3_aspnetcore_and_apis.html
+- https://identityserver4.readthedocs.io/en/latest/quickstarts/4_javascript_client.html
 
 # Working
 - Added Scopes
