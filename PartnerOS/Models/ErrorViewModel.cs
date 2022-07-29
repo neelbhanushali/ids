@@ -1,8 +1,11 @@
-namespace PartnerOS.Models;
+using System;
 
-public class ErrorViewModel
+namespace PartnerOS.Models
 {
-    public string? RequestId { get; set; }
+    public class ErrorViewModel
+    {
+        public string RequestId { get; set; }
 
-    public bool ShowRequestId => !string.IsNullOrEmpty(RequestId);
+        public bool ShowRequestId => !string.IsNullOrEmpty(RequestId);
+    }
 }
