@@ -58,8 +58,6 @@ namespace IdentityServer
             {
                 // see https://identityserver4.readthedocs.io/en/latest/topics/resources.html
                 options.EmitStaticAudienceClaim = true;
-                //options.UserInteraction.LoginUrl = "/Identity/Account/Login";
-                //options.UserInteraction.LogoutUrl = "/Identity/Account/Logout";
                 
             })
                 //.AddInMemoryIdentityResources(Config.IdentityResources)
