@@ -83,6 +83,8 @@ namespace IdentityServer
             .AddGoogle("Google", options =>
             {
                 options.SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme;
+                // Sauce: https://stackoverflow.com/a/51580259/9403680
+                options.SignInScheme = IdentityConstants.ExternalScheme;
 
                 options.ClientId = "863035508847-vi4dc6n8200gtib19ggtss09ufsd7ugh.apps.googleusercontent.com";
                 options.ClientSecret = "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";
