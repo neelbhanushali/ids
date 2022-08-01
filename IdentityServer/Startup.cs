@@ -5,7 +5,7 @@
 using IdentityServer4;
 using IdentityServer4.EntityFramework.DbContexts;
 using IdentityServer4.EntityFramework.Mappers;
-using IdentityServerHost.Quickstart.UI;
+//using IdentityServerHost.Quickstart.UI;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -14,6 +14,11 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System.Linq;
 using System.Reflection;
+using IdentityServer.Models;
+using Microsoft.AspNetCore.Identity;
+using IdentityServer.Data;
+using IdentityServer.Integration;
+using Microsoft.AspNetCore.Identity.UI.Services;
 
 namespace IdentityServer
 {
@@ -32,19 +37,33 @@ namespace IdentityServer
         {
             // uncomment, if you want to add an MVC-based UI
             services.AddControllersWithViews();
+            services.AddRazorPages();
+            services.AddTransient<IEmailSender, EmailSender>();
 
             var migrationsAssembly = typeof(Startup).GetTypeInfo().Assembly.GetName().Name;
             var connectionString = Configuration.GetConnectionString("DefaultConnection");
+
+            services.AddDbContext<IdentityDbContext>(options =>
+                options.UseNpgsql(connectionString, sql => sql.MigrationsAssembly(migrationsAssembly))
+            );
+
+            services.AddIdentity<ApplicationUser, IdentityRole>(options =>
+            {
+                options.SignIn.RequireConfirmedEmail = true;
+            })
+            .AddEntityFrameworkStores<IdentityDbContext>()
+            .AddDefaultTokenProviders();
 
             var builder = services.AddIdentityServer(options =>
             {
                 // see https://identityserver4.readthedocs.io/en/latest/topics/resources.html
                 options.EmitStaticAudienceClaim = true;
+                
             })
                 //.AddInMemoryIdentityResources(Config.IdentityResources)
                 //.AddInMemoryApiScopes(Config.ApiScopes)
                 //.AddInMemoryClients(Config.Clients)
-                .AddTestUsers(TestUsers.Users)
+                //.AddTestUsers(TestUsers.Users)
                 .AddConfigurationStore(options =>
                 {
                     options.ConfigureDbContext = b => b.UseNpgsql(connectionString,
@@ -54,7 +73,8 @@ namespace IdentityServer
                 {
                     options.ConfigureDbContext = b => b.UseNpgsql(connectionString,
                         sql => sql.MigrationsAssembly(migrationsAssembly));
-                });
+                })
+                .AddAspNetIdentity<ApplicationUser>();
 
             // not recommended for production - you need to store your key material somewhere secure
             builder.AddDeveloperSigningCredential();
@@ -63,10 +83,20 @@ namespace IdentityServer
             .AddGoogle("Google", options =>
             {
                 options.SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme;
+                // Sauce: https://stackoverflow.com/a/51580259/9403680
+                options.SignInScheme = IdentityConstants.ExternalScheme;
 
                 options.ClientId = "863035508847-vi4dc6n8200gtib19ggtss09ufsd7ugh.apps.googleusercontent.com";
                 options.ClientSecret = "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";
             });
+
+            services.ConfigureApplicationCookie((obj) =>
+            {
+                obj.LoginPath = "/Identity/Account/Login";
+                obj.LogoutPath = "/Identity/Account/Logout";
+                obj.AccessDeniedPath = "/Error";
+            });
+
         }
 
         public void Configure(IApplicationBuilder app)
@@ -86,9 +116,17 @@ namespace IdentityServer
 
             // uncomment, if you want to add MVC
             app.UseAuthorization();
+            //app.UseEndpoints(endpoints =>
+            //{
+            //    endpoints.MapDefaultControllerRoute();
+            //});
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapDefaultControllerRoute();
+                endpoints.MapRazorPages();
+                endpoints.MapControllerRoute(
+                        name: "default",
+                        pattern: "{controller=Home}/{action=Index}/{id?}");
+                
             });
         }
 
