@@ -138,6 +138,9 @@ namespace IdentityServer
 
                 var context = serviceScope.ServiceProvider.GetRequiredService<ConfigurationDbContext>();
                 context.Database.Migrate();
+
+                serviceScope.ServiceProvider.GetRequiredService<IdentityDbContext>().Database.Migrate();
+
                 if (!context.Clients.Any())
                 {
                     foreach (var client in Config.Clients)
